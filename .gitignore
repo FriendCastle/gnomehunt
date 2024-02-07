@@ -73,3 +73,7 @@ GnomeHunt/[Aa]ssets/[Ss]treamingAssets/aa/*
 
 # vscode files
 GnomeHunt/.vscode/*
+
+# Extra Files
+*.psd*
+*.zip*
