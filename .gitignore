@@ -77,3 +77,6 @@ GnomeHunt/.vscode/*
 # Extra Files
 *.psd*
 *.zip*
+
+# Rider
+.idea
