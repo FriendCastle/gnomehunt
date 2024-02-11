@@ -229,6 +229,7 @@ GameObject:
   - component: {fileID: 1257446330}
   - component: {fileID: 1257446329}
   - component: {fileID: 1257446328}
+  - component: {fileID: 1257446331}
   m_Layer: 0
   m_Name: Del Mar Gardens(LocationMesh)
   m_TagString: Untagged
@@ -319,6 +320,28 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1257446326}
+  m_Mesh: {fileID: 3249130192910333613, guid: 3d0792473731bfb469a6311fbcc8cedb, type: 2}
+--- !u!64 &1257446331
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1257446326}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
   m_Mesh: {fileID: 3249130192910333613, guid: 3d0792473731bfb469a6311fbcc8cedb, type: 2}
 --- !u!1 &1704139681
 GameObject:
@@ -437,6 +460,7 @@ GameObject:
   - component: {fileID: 3214633114917043386}
   - component: {fileID: 5153263982084288566}
   - component: {fileID: 6454761311512006513}
+  - component: {fileID: 6454761311512006514}
   m_Layer: 0
   m_Name: XR Origin
   m_TagString: Untagged
@@ -853,6 +877,24 @@ MonoBehaviour:
   _ContinuousLocalizationEnabled: 0
   _InterpolationEnabled: 0
   _autoTrack: 0
+--- !u!114 &6454761311512006514
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 113977003761765500}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f1ea08893e70bb4582a87b409f9f348, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  arCamera: {fileID: 8095222703122432819}
+  navMeshManager: {fileID: 8745492174671235676}
+  reticlePrefab: {fileID: 2275772905936535570, guid: e34c1d9c90913d846bcc4d2e1da57ada, type: 3}
+  reticleDistance: 2
+  reticleHeightAboveGround: 0.1
+  objectToPlace: {fileID: 8932222671648713686, guid: fbfd53f60270f0b4a9c3f961d4eec410, type: 3}
 --- !u!114 &6823739954881844071
 MonoBehaviour:
   m_ObjectHideFlags: 0
