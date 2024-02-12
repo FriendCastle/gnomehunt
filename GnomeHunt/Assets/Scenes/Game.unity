@@ -876,7 +876,7 @@ MonoBehaviour:
   _defaultAnchorGameobject: {fileID: 0}
   _ContinuousLocalizationEnabled: 0
   _InterpolationEnabled: 0
-  _autoTrack: 0
+  _autoTrack: 1
 --- !u!114 &6454761311512006514
 MonoBehaviour:
   m_ObjectHideFlags: 0

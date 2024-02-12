@@ -5,7 +5,7 @@
 GnomeHunt/[Ll]ibrary/
 GnomeHunt/[Tt]emp/
 GnomeHunt/[Oo]bj/
-GnomeHunt/[Bb]uild/
+*[Bb]uild/
 GnomeHunt/[Bb]uilds/
 GnomeHunt/[Ll]ogs/
 GnomeHunt/[Uu]ser[Ss]ettings/
