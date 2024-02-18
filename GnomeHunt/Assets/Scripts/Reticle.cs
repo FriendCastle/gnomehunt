@@ -3,6 +3,7 @@ using Niantic.Lightship.AR.LocationAR;
 using Niantic.Lightship.AR.NavigationMesh;
 using Niantic.Lightship.AR.PersistentAnchors;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.Serialization;
 
 public class Reticle : MonoBehaviour
@@ -24,6 +25,7 @@ public class Reticle : MonoBehaviour
 
 	private float currentReticleHeight = 0;
 
+	private List<GameObject> spawnedObjects = new List<GameObject>();
 	private List<PersistentARData> persistentAR = new List<PersistentARData>();
 	private string PERSISTENT_AR_COUNT_KEY = "ar_count";
 	private string PERSISTENT_PREFAB_NAME = "test";
@@ -45,6 +47,7 @@ public class Reticle : MonoBehaviour
 				persistentAR.Add(arData);
 				GameObject arObject = Instantiate(objectToPlace, arData.position.ToVector3(), arData.rotation.ToQuaternion(), _arLocationManager.ARLocations[0].transform);
 				arObject.transform.localScale = arData.scale.ToVector3();
+				spawnedObjects.Add(arObject);
 			}
 		}
 	}
@@ -83,7 +86,7 @@ public class Reticle : MonoBehaviour
 
 		UpdateReticlePosition();
 
-		if (Input.GetMouseButtonDown(0) && reticleInstance != null && reticleInstance.activeSelf)
+		if (Input.GetMouseButtonDown(0) && IsPointerOverUIObject() == false && reticleInstance != null && reticleInstance.activeSelf)
 		{
 			Transform objectPlaced = Instantiate(objectToPlace, reticleInstance.transform.position, Quaternion.identity, _arLocationManager.ARLocations[0].transform).transform;
 			Vector3 position = objectPlaced.position;
@@ -108,5 +111,32 @@ public class Reticle : MonoBehaviour
 			newPosition.y = currentReticleHeight + reticleHeightAboveGround;
 			reticleInstance.transform.position = newPosition;
 		}
+	}
+
+	public void ClearPersistentAr()
+	{
+		foreach (GameObject arObject in spawnedObjects)
+		{
+			Destroy(arObject);
+		}
+		
+		spawnedObjects.Clear();
+		
+		PlayerPrefs.DeleteAll();
+		PlayerPrefs.Save();
+	}
+	
+	private bool IsPointerOverUIObject()
+	{
+		// Create a pointer event for the current mouse position
+		PointerEventData eventDataCurrentPosition = new PointerEventData(EventSystem.current);
+		eventDataCurrentPosition.position = new Vector2(Input.mousePosition.x, Input.mousePosition.y);
+
+		// Create a list to receive all results of the raycast
+		List<RaycastResult> results = new List<RaycastResult>();
+		EventSystem.current.RaycastAll(eventDataCurrentPosition, results);
+
+		// Return true if any UI elements were hit by the raycast
+		return results.Count > 0;
 	}
 }
