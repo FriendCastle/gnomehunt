@@ -1,5 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.IO.Compression;
+using System.Text;
 using Niantic.Lightship.AR.LocationAR;
 using Niantic.Lightship.AR.NavigationMesh;
 using UnityEngine;
@@ -37,7 +40,7 @@ public class PersistentARTest : MonoBehaviour
 		}
 
 		string persistentARData = PlayerPrefs.GetString(PERSISTENT_AR_DATA_PLAYER_PREF_KEY, null);
-		SpawnObjectsFromPayload(persistentARData);
+		SpawnObjectsFromPayload(DecompressString(persistentARData));
 	}
 
 	private void SpawnObjectsFromPayload(string argPayload)
@@ -94,7 +97,7 @@ public class PersistentARTest : MonoBehaviour
 				rotation = new PersistentRotation(rotation.x, rotation.y, rotation.z, rotation.w),
 				scale = new PersistentVector(scale.x, scale.y, scale.z)
 			});
-			
+
 			spawnedObjects.Add(objectPlaced.gameObject);
 		}
 	}
@@ -131,7 +134,7 @@ public class PersistentARTest : MonoBehaviour
 
 	public void LoadPersistentAr()
 	{
-		SpawnObjectsFromPayload(GUIUtility.systemCopyBuffer);
+		SpawnObjectsFromPayload(DecompressString(GUIUtility.systemCopyBuffer));
 		SavePersistentARData();
 	}
 
@@ -142,7 +145,7 @@ public class PersistentARTest : MonoBehaviour
 
 	private void SavePersistentARData()
 	{
-		PlayerPrefs.SetString(PERSISTENT_AR_DATA_PLAYER_PREF_KEY, JsonUtility.ToJson(new PersistentARDataPayload(persistentAR.ToArray())));
+		PlayerPrefs.SetString(PERSISTENT_AR_DATA_PLAYER_PREF_KEY, CompressString(JsonUtility.ToJson(new PersistentARDataPayload(persistentAR.ToArray()))));
 		PlayerPrefs.Save();
 	}
 
@@ -158,5 +161,31 @@ public class PersistentARTest : MonoBehaviour
 
 		// Return true if any UI elements were hit by the raycast
 		return results.Count > 0;
+	}
+
+	private string CompressString(string argString)
+	{
+		byte[] bytes = Encoding.UTF8.GetBytes(argString);
+		using (MemoryStream mso = new MemoryStream())
+		{
+			using (GZipStream gs = new GZipStream(mso, CompressionMode.Compress))
+			{
+				gs.Write(bytes, 0, bytes.Length);
+			}
+
+			return Convert.ToBase64String(mso.ToArray());
+		}
+	}
+	
+	private string DecompressString(string argString)
+	{
+		using (var compressedStream = new MemoryStream(Convert.FromBase64String(argString)))
+		using (var decompressor = new GZipStream(compressedStream, CompressionMode.Decompress))
+		using (var decompressedStream = new MemoryStream())
+		{
+			decompressor.CopyTo(decompressedStream);
+			var decompressedData = decompressedStream.ToArray();
+			return Encoding.UTF8.GetString(decompressedData);
+		}
 	}
 }
