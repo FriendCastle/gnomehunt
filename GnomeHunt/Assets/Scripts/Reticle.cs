@@ -1,10 +1,8 @@
 using System.Collections.Generic;
 using Niantic.Lightship.AR.LocationAR;
 using Niantic.Lightship.AR.NavigationMesh;
-using Niantic.Lightship.AR.PersistentAnchors;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.Serialization;
 
 public class Reticle : MonoBehaviour
 {
