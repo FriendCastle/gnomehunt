@@ -4,7 +4,7 @@ using Niantic.Lightship.AR.NavigationMesh;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class Reticle : MonoBehaviour
+public class PersistentARTest : MonoBehaviour
 {
 	[SerializeField] private Camera arCamera = null;
 
@@ -114,6 +114,20 @@ public class Reticle : MonoBehaviour
 	}
 
 	public void ClearPersistentAr()
+	{
+		foreach (GameObject arObject in spawnedObjects)
+		{
+			Destroy(arObject);
+		}
+		
+		spawnedObjects.Clear();
+		persistentAR.Clear();
+		
+		PlayerPrefs.DeleteAll();
+		PlayerPrefs.Save();
+	}
+	
+	public void CopyPersistentAr()
 	{
 		foreach (GameObject arObject in spawnedObjects)
 		{
