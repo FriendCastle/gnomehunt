@@ -45,7 +45,9 @@ public class Reticle : MonoBehaviour
 			{
 				PersistentARData arData = JsonUtility.FromJson<PersistentARData>(data);
 				persistentAR.Add(arData);
-				GameObject arObject = Instantiate(objectToPlace, arData.position.ToVector3(), arData.rotation.ToQuaternion(), _arLocationManager.ARLocations[0].transform);
+				GameObject arObject = Instantiate(objectToPlace, _arLocationManager.ARLocations[0].transform);
+				arObject.transform.localPosition = arData.position.ToVector3();
+				arObject.transform.rotation = arData.rotation.ToQuaternion();
 				arObject.transform.localScale = arData.scale.ToVector3();
 				spawnedObjects.Add(arObject);
 			}
@@ -89,7 +91,7 @@ public class Reticle : MonoBehaviour
 		if (Input.GetMouseButtonDown(0) && IsPointerOverUIObject() == false && reticleInstance != null && reticleInstance.activeSelf)
 		{
 			Transform objectPlaced = Instantiate(objectToPlace, reticleInstance.transform.position, Quaternion.identity, _arLocationManager.ARLocations[0].transform).transform;
-			Vector3 position = objectPlaced.position;
+			Vector3 position = objectPlaced.localPosition;
 			Vector3 scale = objectPlaced.localScale;
 			Quaternion rotation = objectPlaced.rotation;
 
@@ -121,6 +123,7 @@ public class Reticle : MonoBehaviour
 		}
 		
 		spawnedObjects.Clear();
+		persistentAR.Clear();
 		
 		PlayerPrefs.DeleteAll();
 		PlayerPrefs.Save();
