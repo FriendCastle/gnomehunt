@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Niantic.Lightship.AR.LocationAR;
 using Niantic.Lightship.AR.NavigationMesh;
@@ -25,10 +26,9 @@ public class PersistentARTest : MonoBehaviour
 
 	private List<GameObject> spawnedObjects = new List<GameObject>();
 	private List<PersistentARData> persistentAR = new List<PersistentARData>();
-	private string PERSISTENT_AR_COUNT_KEY = "ar_count";
-	private string PERSISTENT_PREFAB_NAME = "test";
+	private const string PERSISTENT_AR_DATA_PLAYER_PREF_KEY = "PERSISTENT_AR_DATA";
 
-	void Start()
+	private void Start()
 	{
 		if (reticlePrefab != null)
 		{
@@ -36,12 +36,17 @@ public class PersistentARTest : MonoBehaviour
 			reticleInstance.SetActive(false);
 		}
 
-		for (int index = 0; index < PlayerPrefs.GetInt(PERSISTENT_AR_COUNT_KEY, 0); index++)
+		string persistentARData = PlayerPrefs.GetString(PERSISTENT_AR_DATA_PLAYER_PREF_KEY, null);
+		SpawnObjectsFromPayload(persistentARData);
+	}
+
+	private void SpawnObjectsFromPayload(string argPayload)
+	{
+		if (string.IsNullOrEmpty(argPayload) == false)
 		{
-			string data = PlayerPrefs.GetString(PERSISTENT_PREFAB_NAME + index, null);
-			if (string.IsNullOrEmpty(data) == false)
+			PersistentARDataPayload arDataPayload = JsonUtility.FromJson<PersistentARDataPayload>(argPayload);
+			foreach (PersistentARData arData in arDataPayload)
 			{
-				PersistentARData arData = JsonUtility.FromJson<PersistentARData>(data);
 				persistentAR.Add(arData);
 				GameObject arObject = Instantiate(objectToPlace, _arLocationManager.ARLocations[0].transform);
 				arObject.transform.localPosition = arData.position.ToVector3();
@@ -52,19 +57,7 @@ public class PersistentARTest : MonoBehaviour
 		}
 	}
 
-	private void OnApplicationQuit()
-	{
-		PlayerPrefs.SetInt(PERSISTENT_AR_COUNT_KEY, persistentAR.Count);
-
-		for (var index = 0; index < persistentAR.Count; index++)
-		{
-			PersistentARData arData = persistentAR[index];
-			PlayerPrefs.SetString(PERSISTENT_PREFAB_NAME + index, JsonUtility.ToJson(arData));
-			PlayerPrefs.Save();
-		}
-	}
-
-	void Update()
+	private void Update()
 	{
 		if (navMeshManager != null)
 		{
@@ -95,11 +88,14 @@ public class PersistentARTest : MonoBehaviour
 
 			persistentAR.Add(new PersistentARData
 			{
-				prefabName = PERSISTENT_PREFAB_NAME,
+				prefabName = objectToPlace.name,
+				guid = Guid.NewGuid().ToString(),
 				position = new PersistentVector(position.x, position.y, position.z),
 				rotation = new PersistentRotation(rotation.x, rotation.y, rotation.z, rotation.w),
 				scale = new PersistentVector(scale.x, scale.y, scale.z)
 			});
+			
+			spawnedObjects.Add(objectPlaced.gameObject);
 		}
 	}
 
@@ -119,28 +115,37 @@ public class PersistentARTest : MonoBehaviour
 		{
 			Destroy(arObject);
 		}
-		
+
 		spawnedObjects.Clear();
 		persistentAR.Clear();
-		
+
 		PlayerPrefs.DeleteAll();
 		PlayerPrefs.Save();
 	}
-	
+
 	public void CopyPersistentAr()
 	{
-		foreach (GameObject arObject in spawnedObjects)
-		{
-			Destroy(arObject);
-		}
-		
-		spawnedObjects.Clear();
-		persistentAR.Clear();
-		
-		PlayerPrefs.DeleteAll();
+		SavePersistentARData();
+		GUIUtility.systemCopyBuffer = PlayerPrefs.GetString(PERSISTENT_AR_DATA_PLAYER_PREF_KEY);
+	}
+
+	public void LoadPersistentAr()
+	{
+		SpawnObjectsFromPayload(GUIUtility.systemCopyBuffer);
+		SavePersistentARData();
+	}
+
+	private void OnApplicationQuit()
+	{
+		SavePersistentARData();
+	}
+
+	private void SavePersistentARData()
+	{
+		PlayerPrefs.SetString(PERSISTENT_AR_DATA_PLAYER_PREF_KEY, JsonUtility.ToJson(new PersistentARDataPayload(persistentAR.ToArray())));
 		PlayerPrefs.Save();
 	}
-	
+
 	private bool IsPointerOverUIObject()
 	{
 		// Create a pointer event for the current mouse position

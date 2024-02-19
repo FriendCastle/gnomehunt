@@ -1,10 +1,33 @@
 using System;
+using System.Collections;
 using UnityEngine;
+
+[Serializable]
+public class PersistentARDataPayload : IEnumerable
+{
+	public PersistentARData[] payload;
+
+	public PersistentARDataPayload(PersistentARData[] payload)
+	{
+		this.payload = payload;
+	}
+
+	public void Clear()
+	{
+		payload = Array.Empty<PersistentARData>();
+	}
+
+	public IEnumerator GetEnumerator()
+	{
+		return payload.GetEnumerator();
+	}
+}
 
 [Serializable]
 public class PersistentARData
 {
 	public string prefabName;
+	public string guid;
 	public PersistentVector position;
 	public PersistentRotation rotation;
 	public PersistentVector scale;
@@ -45,7 +68,7 @@ public class PersistentRotation
 		this.z = z;
 		this.w = w;
 	}
-	
+
 	public Quaternion ToQuaternion()
 	{
 		return new Quaternion(x, y, z, w);
