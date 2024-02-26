@@ -5,10 +5,12 @@ using UnityEngine;
 [Serializable]
 public class PersistentARDataPayload : IEnumerable
 {
+	public string locationData;
 	public PersistentARData[] payload;
 
-	public PersistentARDataPayload(PersistentARData[] payload)
+	public PersistentARDataPayload(string locationData, PersistentARData[] payload)
 	{
+		this.locationData = locationData;
 		this.payload = payload;
 	}
 
