@@ -237,6 +237,8 @@ public class PersistentARTest : MonoBehaviour
 		spawnedObjects.Clear();
 		persistentAR.Clear();
 
+		currentPayload = null;
+		trackingText.text = trackingText.text = string.Format("Tracked - {0}", "No Data Found");
 		PlayerPrefs.DeleteAll();
 		PlayerPrefs.Save();
 	}
@@ -311,20 +313,27 @@ public class PersistentARTest : MonoBehaviour
 	
 	private string DecompressString(string argString)
 	{
-		using (var compressedStream = new MemoryStream(Convert.FromBase64String(argString)))
-		using (var decompressor = new GZipStream(compressedStream, CompressionMode.Decompress))
-		using (var decompressedStream = new MemoryStream())
+		try
 		{
-			decompressor.CopyTo(decompressedStream);
-			var decompressedData = decompressedStream.ToArray();
-			return Encoding.UTF8.GetString(decompressedData);
+			using (var compressedStream = new MemoryStream(Convert.FromBase64String(argString)))
+			using (var decompressor = new GZipStream(compressedStream, CompressionMode.Decompress))
+			using (var decompressedStream = new MemoryStream())
+			{
+				decompressor.CopyTo(decompressedStream);
+				var decompressedData = decompressedStream.ToArray();
+				return Encoding.UTF8.GetString(decompressedData);
+			}
+		}
+		catch
+		{
+			return null;
 		}
 	}
 
 	private PersistentARDataPayload GetPayloadFromJsonString(string argJsonString)
 	{
 		// Check for valid payload
-		if (string.IsNullOrEmpty(argJsonString) == false && Convert.TryFromBase64String(argJsonString, new Span<byte>(new byte[argJsonString.Length]), out _))
+		if (string.IsNullOrEmpty(argJsonString) == false)
 		{
 			return JsonUtility.FromJson<PersistentARDataPayload>(DecompressString(argJsonString));
 		}
