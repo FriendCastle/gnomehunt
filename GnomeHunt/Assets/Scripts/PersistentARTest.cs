@@ -43,15 +43,14 @@ public class PersistentARTest : MonoBehaviour
 	private List<PersistentARData> persistentAR = new List<PersistentARData>();
 	private string currentLocationData;
 	private bool tracking = false;
-	private bool canPlaceGnome = false;
-	private bool gnomePlaced = false;
 
 	private const string PERSISTENT_AR_DATA_PLAYER_PREF_KEY = "PERSISTENT_AR_DATA";
 	public enum GameState
 	{
 		NotTracking,
 		FindGnome,
-		PlaceGnome
+		PlaceGnome,
+		FoundGnome
 	}
 
 	private GameState currentGameState = GameState.NotTracking;
@@ -120,6 +119,7 @@ public class PersistentARTest : MonoBehaviour
 			case GameState.NotTracking:
 				break;
 			case GameState.FindGnome:
+				FindGnomeUpdate();
 				break;
 			case GameState.PlaceGnome:
 				PlaceGnomeUpdate();
@@ -127,13 +127,22 @@ public class PersistentARTest : MonoBehaviour
 		}
 	}
 
-	public void OnPlaceGnomeButtonPressed()
+	private void FindGnomeUpdate()
 	{
-		currentGameState = GameState.PlaceGnome;
-		mainMenuGroup.gameObject.SetActive(false);
-		trackingText.text = "Look around to enable Gnome placement!";
+		Ray ray = new Ray(arCamera.transform.position, arCamera.transform.forward);
+		RaycastHit hit;
+
+		if (Physics.Raycast(ray, out hit, 10f))
+		{
+			if (hit.transform.CompareTag("Gnome"))
+			{
+				currentGameState = GameState.FoundGnome;
+				trackingText.text = "You found the gnome!";
+				mainMenuGroup.gameObject.SetActive(true);
+			}
+		}
 	}
-	
+
 	private void PlaceGnomeUpdate()
 	{
 		if (navMeshManager != null)
@@ -181,7 +190,6 @@ public class PersistentARTest : MonoBehaviour
 			});
 
 			spawnedObjects.Add(objectPlaced.gameObject);
-			gnomePlaced = true;
 			copyGnomeButton.gameObject.SetActive(true);
 			trackingText.text = "Gnome Placed!\nTap to replace or copy data to send to a friend!";
 		}
@@ -197,6 +205,28 @@ public class PersistentARTest : MonoBehaviour
 		}
 	}
 
+	
+	public void OnFindGnomeButtonPressed()
+	{
+		currentGameState = GameState.FindGnome;
+		mainMenuGroup.gameObject.SetActive(false);
+		
+		if (currentPayload != null)
+		{
+			SpawnObjectsFromPayload(currentPayload);
+		}
+
+		SavePersistentARData();
+		trackingText.text = "Look around for the hidden gnome!";
+	}
+	
+	public void OnPlaceGnomeButtonPressed()
+	{
+		currentGameState = GameState.PlaceGnome;
+		mainMenuGroup.gameObject.SetActive(false);
+		trackingText.text = "Look around to enable Gnome placement!";
+	}
+	
 	public void ClearPersistentAr()
 	{
 		foreach (GameObject arObject in spawnedObjects)
@@ -215,16 +245,6 @@ public class PersistentARTest : MonoBehaviour
 	{
 		SavePersistentARData();
 		GUIUtility.systemCopyBuffer = PlayerPrefs.GetString(PERSISTENT_AR_DATA_PLAYER_PREF_KEY);
-	}
-
-	public void LoadPersistentAr()
-	{
-		if (currentPayload != null)
-		{
-			SpawnObjectsFromPayload(currentPayload);
-		}
-
-		SavePersistentARData();
 	}
 
 	private PersistentARDataPayload GetCurrentPersistentARData()

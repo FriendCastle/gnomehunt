@@ -1219,7 +1219,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 6454761311512006514}
         m_TargetAssemblyTypeName: PersistentARTest, Assembly-CSharp
-        m_MethodName: LoadPersistentAr
+        m_MethodName: OnFindGnomeButtonPressed
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1279,6 +1279,7 @@ GameObject:
   - component: {fileID: 991113036}
   - component: {fileID: 991113035}
   - component: {fileID: 991113034}
+  - component: {fileID: 991113037}
   m_Layer: 0
   m_Name: Comstock Park(LocationMesh)
   m_TagString: Untagged
@@ -1370,6 +1371,28 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 991113032}
+  m_Mesh: {fileID: 4443533689355867710, guid: 634231f6728a347398dd421832ec9a07, type: 2}
+--- !u!64 &991113037
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 991113032}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
   m_Mesh: {fileID: 4443533689355867710, guid: 634231f6728a347398dd421832ec9a07, type: 2}
 --- !u!1 &1101540428
 GameObject:
