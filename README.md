@@ -11,14 +11,5 @@ In this demo, players will be able to go to a real life location to participate 
 
 At the end of the game, the player will be able to modify a piece of the AR experience and the next user that plays will be able to see it.
 
-## Development
-
-For this project, we are specifically focused on utilizing Lightship's VPS location based AR and persistence tracking.
-
-### Questions
-
-How do we utilize Lightship's API so that users on different devices can see the same persistent AR/changes to specific locations?
-
-### Issues Encountered
-
-### Findings
+Editor Example:
+https://www.youtube.com/watch?v=GnhbABKCzQs
