@@ -2,8 +2,6 @@
 
 # Gnome Hunt
 
-See **develop** branch for current work.
-
 ## What is Gnome Hunt?
 Gnome Hunt is tech demo made to showcase Niantic's new Lighship ARDK 3.0.
 
